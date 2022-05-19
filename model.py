@@ -56,6 +56,12 @@ def get_predictions():
     # predictions_data = json.dumps(predictions_data, indent=4)
     return jsonify(predictions_data)
 
+
+if __name__ == '__main__':
+    app.debug=True
+    app.run()
+
+
 # pred_data = get_predictions()
 # print(pred_data)
 # tic_list = ['HBL', 'ENGRO', 'LUCK', 'UBL']
