@@ -29,8 +29,8 @@ def predict_stocks(tic, model):
     predictions = scaler.inverse_transform(predictions)
 
     return {'tic': tic,
-            'close': json.loads(close_prices.values.tolist()),
-            'predictions': json.loads(predictions.tolist())}
+            'close': json.dumps(close_prices.values.tolist()),
+            'predictions': json.dumps(predictions.tolist())}
 
 
 @app.route('/stocks/<name>')
