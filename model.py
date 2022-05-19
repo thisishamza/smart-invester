@@ -57,10 +57,6 @@ def get_predictions():
     return jsonify(predictions_data)
 
 
-if __name__ == '__main__':
-    app.debug=True
-    app.run()
-
 
 # pred_data = get_predictions()
 # print(pred_data)
