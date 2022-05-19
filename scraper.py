@@ -10,11 +10,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 
 
-
 def driver_server():
-    # from pyvirtualdisplay import Display
-    # display = Display(visible=0, size=(1024, 768))
-    # display.start()
     display = ''
     options = Options()
     options.add_argument('--disable-notifications')
@@ -24,9 +20,7 @@ def driver_server():
     options.add_argument('--no-sandbox')
     options.add_argument('User-Agent=[Mozilla/5.0]')
     while True:
-        # print('in while true driver')
         try:
-            # driver = webdriver.Chrome(executable_path="/amazon/shopnroar_amazon/chromedriver", chrome_options=options)
             driver = webdriver.Chrome(
                 executable_path="chromedriver.exe",
                 chrome_options=options
@@ -36,33 +30,37 @@ def driver_server():
         except Exception as e:
             print(e)
             continue
-    # return driver, display
     return driver
 
 
 server_dir_path = ""
 stocks_data = []
-stock_df = pd.DataFrame(columns=['time', 'ldcp', 'open', 'high', 'low', 'close', 'volume', 'tic'])
+stock_df = pd.DataFrame(
+    columns=['time', 'ldcp', 'open', 'high', 'low', 'close', 'volume', 'tic'])
 
 
-def pakistan_stock(month,tic):
+def pakistan_stock(month, tic):
     global stock_df
     global stocks_data
-    sitelink="https://dps.psx.com.pk/historical"
+    sitelink = "https://dps.psx.com.pk/historical"
     page = 1
     driver = driver_server()
     driver.get(sitelink)
     driver.find_element_by_xpath('//*[@id="historicalSymbolSearch"]').clear()
-    driver.find_element_by_xpath('//*[@id="historicalSymbolSearch"]').send_keys(tic)
-    select = Select(driver.find_element_by_css_selector('div.dropdown.historical__month select.dropdown__select'))
+    driver.find_element_by_xpath(
+        '//*[@id="historicalSymbolSearch"]').send_keys(tic)
+    select = Select(driver.find_element_by_css_selector(
+        'div.dropdown.historical__month select.dropdown__select'))
     select.select_by_visible_text(month)
-    select2 = Select(driver.find_element_by_css_selector('div.dropdown.historical__year select.dropdown__select'))
+    select2 = Select(driver.find_element_by_css_selector(
+        'div.dropdown.historical__year select.dropdown__select'))
     select2.select_by_visible_text('2022')
     time.sleep(1)
     driver.find_element_by_xpath('//*[@id="historicalSymbolBtn"]').click()
     time.sleep(3)
     with open('' + f'{tic}.csv', mode='a') as employee_file:
-        employee_writer = csv.writer(employee_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        employee_writer = csv.writer(
+            employee_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         while True:
             soup = BeautifulSoup(driver.page_source, 'html.parser')
             div = soup.find('div', {'class': 'dataTables_paginate'})
@@ -92,21 +90,25 @@ def pakistan_stock(month,tic):
                 volume = col[5].text.strip()
                 print(volume)
                 try:
-                    employee_writer.writerow([sym, timee, OPEN, high, low, close, volume])
-                    stocks_data.append((sym, timee, OPEN, high, low, close, volume))
+                    employee_writer.writerow(
+                        [sym, timee, OPEN, high, low, close, volume])
+                    stocks_data.append(
+                        (sym, timee, OPEN, high, low, close, volume))
 
                 except:
                     pass
             try:
                 page = 100
                 if total_page >= page:
-                    driver.find_element_by_xpath('//*[@id="historicalTable_next"]').click()
+                    driver.find_element_by_xpath(
+                        '//*[@id="historicalTable_next"]').click()
                     time.sleep(2)
                     page = page + 1
                 elif page > total_page:
                     df = pd.DataFrame(
                         stocks_data,
-                        columns=['tic', 'time', 'open', 'high', 'low', 'close', 'volume']
+                        columns=['tic', 'time', 'open',
+                                 'high', 'low', 'close', 'volume']
                     )
                     stock_df = stock_df.append(df, ignore_index=True)
                     driver.close()
@@ -135,7 +137,7 @@ def get_new_data(tic):
     data_df = pd.read_csv(f'{tic}.csv')
     return data_df
 
-tic_list = ['BOP']
+
+tic_list = ['ASL']
 for tic in tic_list:
     get_new_data(tic)
-
