@@ -29,39 +29,24 @@ def predict_stocks(tic, model):
     predictions = model.predict(test_data)
     predictions = scaler.inverse_transform(predictions)
 
-    closes=close_prices.values.tolist()
-    datas=dates.values.tolist()
-    preds=predictions.tolist()
+    closes = close_prices.values.tolist()
+    datas = dates.values.tolist()
+    preds = predictions.tolist()
 
     data = {}
 
-    for x,y,z in zip(closes,datas,preds):
-        test = {}
-        test['close'] = x[0]
-        test['date'] = y[0]
-        test['prediction'] = z[0]
-        # data.update(test)
-        
+    for x, y, z in zip(closes, datas, preds):
+        stock = {}
+        stock['close'] = x[0]
+        stock['date'] = y[0]
+        stock['prediction'] = z[0]
+
         if "data" in data:
-            data["data"].append(test)
+            data["data"].append(stock)
         else:
-            data["data"] = [test]
+            data["data"] = [stock]
 
-        print(data)
-
-    # for i in range(len(preds)):
-    #     test = {}
-    #     test['close'] = closes[i]
-    #     test['date'] = datas[i]
-    #     test['prediction'] = preds[i]
-    #     data['data'] = test
-    
     return data
-    # return {'tic': tic,
-    #         'close': (close_prices.values.tolist()),
-    #         'predictions': (predictions.tolist()),
-    #         'date': (dates.values.tolist())
-    #         }
 
 
 @app.route('/stocks/<name>')
