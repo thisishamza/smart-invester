@@ -29,17 +29,13 @@ def predict_stocks(tic, model):
     predictions = scaler.inverse_transform(predictions)
 
     return {'tic': tic,
-            'close': json.dumps(close_prices.values.tolist()),
-            'predictions': json.dumps(predictions.tolist())}
+            'close': (close_prices.values.tolist()),
+            'predictions': (predictions.tolist())}
 
 
 @app.route('/stocks/<name>')
 def get_predictions(name):
     model = keras.models.load_model('./model/')
-
-    predictions_data = []
-
     tic_data = predict_stocks(name, model)
-    predictions_data.append(json.dumps(tic_data))
 
-    return jsonify(predictions_data)
+    return tic_data
