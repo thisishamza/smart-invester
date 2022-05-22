@@ -138,6 +138,6 @@ def get_new_data(tic):
     return data_df
 
 
-tic_list = ['APL']
+tic_list = ['HTL']
 for tic in tic_list:
     get_new_data(tic)
